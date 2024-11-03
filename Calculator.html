@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Calculator</title>
+    <style>
+        * {
+            margin: 0%;
+            padding: 0%;
+        }
+        .main {
+            background-color: red;
+            height: 550px;
+            width: 500px;
+            position: absolute;
+            top: 50%;
+            left: 30%;
+            transform: translate(-50%, -50%);
+            border: 2px solid black;
+            border-radius: 15px;
+        }
+        .main button {
+            position: relative;
+            height: 70px;
+            width: 70px;
+            top: 5%;
+            left: 4%;
+            margin: 15px 10px;
+            padding-inline: 0px 0px;
+            font-size: 25px;
+            font-weight: bolder;
+            border: 2px solid white;
+            border-radius: 10px;
+            background-color: mediumpurple;
+            color: black;
+        }
+        .main button:hover {
+            background-color: darkblue;
+        }
+        #textField {
+            position: relative;
+            top: 5%;
+            left: 5%;
+            background-color: white;
+            text-align: right;
+            height: 50px;
+            width: 410px;
+            margin: 15px 10px;
+            padding: 10px;
+            color: black;
+            border: 2px solid black;
+            border-radius: 10px;
+            font-size: 30px;
+            font-family: cursive;
+            font-weight: bolder;
+        }
+        #equal {
+            position: absolute;
+            top: 60%;
+            left: 79%;
+            height: 170px;
+        }
+        .history {
+            position: absolute;
+            top: 5%;
+            right: 10%;
+            width: 500px;
+            border: 2px solid black;
+            border-radius: 10px;
+            background-color: lightgrey;
+            font-family: Arial, sans-serif;
+            font-size: 20px;
+            color: black;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="main">
+    <input type="text" name="text" placeholder="0" id="textField" disabled><br>
+    <!-- Calculator Buttons -->
+    <button>7</button>
+    <button>8</button>
+    <button>9</button>
+    <button>DEL</button>
+    <button>C</button><br>
+    <button>4</button>
+    <button>5</button>
+    <button>6</button>
+    <button>*</button>
+    <button>/</button><br>
+    <button>1</button>
+    <button>2</button>
+    <button>3</button>
+    <button id="squareRoot">-</button><br>
+    <button>√</button>
+    <button>0</button>
+    <button>.</button>
+    <button>+</button>
+    <button id="equal">=</button>
+    </div>
+
+    <!-- New history div to display past calculations -->
+    <div class="history" id="historyDisplay" >
+    <h3>History</h3>
+    </div>
+
+    <script>
+
+    let string = "";
+    let textField = document.getElementById("textField");
+    let buttons = document.querySelectorAll(".main button");
+    let historyDisplay = document.getElementById("historyDisplay");
+    let records = [];
+
+    // Attach event listeners to each button
+    buttons.forEach((button) => {
+        button.addEventListener('click', handleButtonClick);
+    });
+
+    function handleButtonClick(event) {
+        let buttonText = event.target.innerHTML;
+
+        if (buttonText === 'C') {
+            textField.value = "";
+            string = "";
+        } else if (buttonText === 'DEL') {
+            let temp = textField.value.toString().slice(0, -1);
+            textField.value = temp;
+            string = temp;
+        } else if (buttonText === '=') {
+            let result = execute(string);
+            textField.value = result;
+            records.push(`${string} = ${result}`);  // Store expression with result
+            string = result;
+            updateHistoryDisplay();
+        } else if (buttonText === '√') {
+            let result = Math.sqrt(parseFloat(string));
+            if (isNaN(result)) {
+                result = "ERROR";  // Handle invalid square root
+            }
+            textField.value = result;
+            records.push(`√${string} = ${result}`);
+            string = result.toString();
+            updateHistoryDisplay();
+        } else {
+            string += buttonText;
+            textField.value = string;
+            
+        }
+    }
+
+    function execute(expression) {
+        try {
+            return eval(expression);
+        } catch (error) {
+            console.log(error);
+            return 'ERROR';
+        }
+    }
+
+
+    function updateHistoryDisplay() {
+        historyDisplay.innerHTML = "<h3>History</h3>"; // Reset history display
+        records.forEach((record) => {
+            historyDisplay.innerHTML += `<p>${record}</p>`;
+        });
+    }
+
+
+    </script>
+</body>
+</html>
